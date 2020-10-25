@@ -5,7 +5,7 @@ import { getAllProjects } from "./getAllProjects";
 import { parseCommandResult } from "./parseCommandResult";
 import { info } from "@actions/core";
 
-const buildcommand = (args: argument, project: string) => {
+const buildCommand = (args: argument, project: string) => {
   return (
     `dotnet list ${project} package --${args.searchFor} ` +
     (args.versionToSelect !== versionToSelect.latest ? `--${args} ` : "") +
@@ -31,18 +31,23 @@ const execute = async () => {
         },
       },
     };
-    await exec(buildcommand(args, project), [], execOption);
+    await exec(buildCommand(args, project), [], execOption);
     const packages = parseCommandResult(cmdResult);
     for (const nPackage of packages) {
-      info(`ìnstalling ${nPackage.name} with version ${nPackage.latestVersion} `)
+      if (args.ignore.some((x) => x === nPackage.name)) {
+        info(`${nPackage.name} ignored`);
+        continue;
+      }
+      info(
+        `ìnstalling ${nPackage.name} with version ${nPackage.latestVersion} `
+      );
       try {
         await exec(
           `dotnet add ${project} package ${nPackage.name} -v ${nPackage.latestVersion}`
-        );  
+        );
       } catch (error) {
         continue;
       }
-      
     }
   }
 };

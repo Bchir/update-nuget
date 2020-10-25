@@ -10,12 +10,12 @@ export const parseCommandResult = (commandResult: string): nugetPackage[] => {
 
   for (const line of commandLines) {
     
-    const trimedLine = line.trim().replace(/\s+/g,' ');
+    const trimmedLine = line.trim().replace(/\s+/g,' ');
 
-    const filledCols = trimedLine.split(/\s/);
+    const filledCols = trimmedLine.split(/\s/);
     
     if (
-      trimedLine.startsWith(">") &&
+      trimmedLine.startsWith(">") &&
       filledCols.length === ColumnNumber
     ) {
       const name = filledCols[1];
