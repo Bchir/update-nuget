@@ -1,5 +1,5 @@
 name: 'nuget update'
-description: 'update project nuget packages'
+description: 'update project NuGet packages'
 author: 'Bchir'
 runs:
   using: 'node12'
@@ -19,13 +19,13 @@ inputs:
       Possible values : 'highest-minor' , 'highest-patch', 'latest'
     required: true
   includePrerelease:
-    description: Should consider Prerelease versions of nuget packages.
+    description: Should consider Prerelease versions of NuGet packages.
     required: false
     default: 'false'
   directory:
     description: |
       Targeted directory, it will look for any csProj file recursively.
-      exemple : ./src
+      example : ./src
     default: './'
     required: false
   targetFramework:
@@ -33,8 +33,8 @@ inputs:
     required: false
   source:
     description: |
-      List of nuget sources to use. Each source in one line.
+      List of NuGet sources to use. Each source in one line.
     required: false
   ignore:
-    description: List of nuget packages that should be ignored by the action. Each nuget on one line.
+    description: List of NuGet packages that should be ignored by the action. Each NuGet on one line.
     required: false
