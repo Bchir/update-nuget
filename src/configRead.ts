@@ -5,7 +5,8 @@ import { argument, searchFor, versionToSelect } from "./argumentTypes";
 const getStrings = (paramName: string): string[] => {
   const readValue = getInput(paramName, { required: false });
 
-  if (readValue === null || readValue === undefined) return [];
+  if (readValue === null || readValue === undefined || readValue.length === 0) 
+    return [];
 
   return readValue.split(EOL).map((x) => x.trim());
 };

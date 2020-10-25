@@ -34,15 +34,20 @@ const execute = async () => {
     await exec(buildcommand(args, project), [], execOption);
     const packages = parseCommandResult(cmdResult);
     for (const nPackage of packages) {
-      info(`ìnstalling ${nPackage.name} with version ${nPackage.latestVersion} `)
+      if (args.ignore.some((x) => x === nPackage.name)) {
+        info(`${nPackage.name} ignored`);
+        continue;
+      }
+      info(
+        `ìnstalling ${nPackage.name} with version ${nPackage.latestVersion} `
+      );
       try {
         await exec(
           `dotnet add ${project} package ${nPackage.name} -v ${nPackage.latestVersion}`
-        );  
+        );
       } catch (error) {
         continue;
       }
-      
     }
   }
 };
