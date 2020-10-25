@@ -54,7 +54,7 @@ We recommend using this along with a task for creating pull requests automatical
       run: dotnet restore
 
     - name: update packages
-      uses: bchir/nuget-update@v1.0
+      uses: bchir/nuget-update@V1.0.0
       with:
         searchFor: 'outdated'
         versionToSelect: 'latest'
