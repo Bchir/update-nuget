@@ -1,0 +1,40 @@
+name: 'nuget update'
+description: 'update project nuget packages'
+author: 'Bchir'
+runs:
+  using: 'node12'
+  main: 'lib/main.js'
+branding:
+  icon: arrow-up
+  color: blue
+inputs:
+  searchFor:
+    description: |
+      Select what packages to update
+      Possible values : 'deprecated' , 'outdated'
+    required: true
+  versionToSelect:
+    description: |
+      Considers only the packages with a matching criteria when searching for newer packages
+      Possible values : 'highest-minor' , 'highest-patch', 'latest'
+    required: true
+  includePrerelease:
+    description: Should consider Prerelease versions of nuget packages.
+    required: false
+    default: 'false'
+  directory:
+    description: |
+      Targeted directory, it will look for any csProj file recursively.
+      exemple : ./src
+    default: './'
+    required: false
+  targetFramework:
+    description: 'targeted framework'
+    required: false
+  source:
+    description: |
+      List of nuget sources to use. Each source in one line.
+    required: false
+  ignore:
+    description: List of nuget packages that should be ignored by the action. Each nuget on one line.
+    required: false
