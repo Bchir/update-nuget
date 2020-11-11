@@ -1,53 +1,33 @@
 import { exec } from "@actions/exec";
-import { argument, versionToSelect } from "./argumentTypes";
 import { readConfiguration } from "./configRead";
 import { getAllProjects } from "./getAllProjects";
-import { parseCommandResult } from "./parseCommandResult";
 import { info } from "@actions/core";
-
-const buildCommand = (args: argument, project: string) => {
-  return (
-    `dotnet list ${project} package --${args.searchFor} ` +
-    (args.versionToSelect !== versionToSelect.latest ? `--${args} ` : "") +
-    (args.targetFramework !== undefined
-      ? `--framework ${args.targetFramework} `
-      : "") +
-    (args.includePrerelease ? "--include-prerelease " : " ") +
-    args.source.map((src) => `--source ${src}`).join(" ")
-  );
-};
+import { createPackageManifest } from "./createPackageManifest";
+import { InstallPackage } from "./installPackage";
 
 const execute = async () => {
   const args = readConfiguration();
   info(`Finding projects under ${args.directory}`);
   const projects = getAllProjects(args.directory);
 
-  for (const project of projects) {
-    let cmdResult = "";
-    const execOption = {
-      listeners: {
-        stdout: (data: Buffer) => {
-          cmdResult += data.toString();
-        },
-      },
-    };
-    await exec(buildCommand(args, project), [], execOption);
-    const packages = parseCommandResult(cmdResult);
-    for (const nPackage of packages) {
-      if (args.ignore.some((x) => x === nPackage.name)) {
-        info(`${nPackage.name} ignored`);
-        continue;
+  const packageManifest = await createPackageManifest(projects, args);
+
+  info(`manifest : ${JSON.stringify(packageManifest, null, "\t")}`);
+
+  let continueInstall = false;
+
+  while (continueInstall) {
+    continueInstall = false;
+    for (const manif of packageManifest) {
+      const successfullProjects: string[] = [];
+      for (const proj of manif.projects) {
+        const isSuccess = await InstallPackage(manif.nuget, proj);
+        if (isSuccess) {
+          successfullProjects.push(proj);
+          continueInstall = true;
+        }
       }
-      info(
-        `ìnstalling ${nPackage.name} with version ${nPackage.latestVersion} `
-      );
-      try {
-        await exec(
-          `dotnet add ${project} package ${nPackage.name} -v ${nPackage.latestVersion}`
-        );
-      } catch (error) {
-        continue;
-      }
+      manif.projects = manif.projects.filter(x => !successfullProjects.some(a => a === x));
     }
   }
 };
