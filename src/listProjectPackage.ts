@@ -27,5 +27,5 @@ export const listProjectPackages = async (args: argument, project: string) : Pro
         await exec(buildCommand(args, project), [], execOption);
 
         return parseCommandResult(cmdResult)
-            .filter(x => args.ignore.some(i => i !== x.name));
+            .filter(x => !args.ignore.some(i => i === x.name));
 }
