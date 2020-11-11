@@ -14,7 +14,7 @@ const execute = async () => {
 
   info(`manifest : ${JSON.stringify(packageManifest, null, "\t")}`);
 
-  let continueInstall = false;
+  let continueInstall = true;
 
   while (continueInstall) {
     continueInstall = false;
