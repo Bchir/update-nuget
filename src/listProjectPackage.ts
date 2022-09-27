@@ -6,7 +6,7 @@ import { parseCommandResult } from "./parseCommandResult";
 const buildCommand = (args: argument, project: string) => {
     return (
         `dotnet list ${project} package --${args.searchFor} ` +
-        (args.versionToSelect !== versionToSelect.latest ? `--${args} ` : "") +
+        (args.versionToSelect !== versionToSelect.latest ? `--${args.versionToSelect} ` : "") +
         (args.targetFramework !== undefined
             ? `--framework ${args.targetFramework} `
             : "") +
